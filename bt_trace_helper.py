@@ -8,6 +8,7 @@ import argparse
 import os
 import subprocess
 import sys
+import datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -25,6 +26,7 @@ class BTTraceHelper:
     def __init__(self):
         self.processes: List[subprocess.Popen] = []
         self.running = False
+        self.creation_string = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H-%M_")
         
     def check_root(self) -> bool:
         """Check if running with root privileges."""
@@ -147,19 +149,19 @@ class BTTraceHelper:
             {
                 'name': 'kernel journal',
                 'cmd': ['journalctl', '-o', 'short-monotonic', '-f', '-t', 'kernel'],
-                'output': output_dir / 'journal-kernel.log',
+                'output': output_dir / ( self.creation_string + 'journal-kernel.log' ),
                 'needs_sudo': False
             },
             {
                 'name': 'bluetoothd journal',
                 'cmd': ['journalctl', '-o', 'short-monotonic', '-f', '-u', 'bluetooth'],
-                'output': output_dir / 'journal-bluetoothd.log',
+                'output': output_dir / ( self.creation_string + 'journal-bluetoothd.log' ),
                 'needs_sudo': False
             },
             {
                 'name': 'kernel trace pipe',
                 'cmd': ['cat', '/sys/kernel/tracing/trace_pipe'],
-                'output': output_dir / 'endless-trace.log',
+                'output': output_dir / ( self.creation_string + 'endless-trace.log' ),
                 'needs_sudo': True
             }
         ]
@@ -264,7 +266,7 @@ Examples:
                         help='Stop kernel tracing (requires root)')
     
     args = parser.parse_args()
-    
+
     helper = BTTraceHelper()
     
     # If no arguments, show help
