@@ -17,6 +17,7 @@ class BTTraceHelper:
     """Helper class to manage Bluetooth kernel tracing and log collection."""
     
     TRACING_PATH = Path("/sys/kernel/tracing")
+    DYNAMIC_DEBUG_PATH = Path("/proc/dynamic_debug/control")
     
     # All Bluetooth functions to trace
     TRACE_FUNCTIONS = [
@@ -105,7 +106,7 @@ class BTTraceHelper:
         ]
         
         for filter in debug_filters:
-            if not self.write_to_file(Path("/proc/dynamic_debug/control"), f"{filter}\n", mode='w'):
+            if not self.write_to_file(DYNAMIC_DEBUG_PATH), f"{filter}\n", mode='w'):
                 print(f"Warning: Failed to set dynamic debug filter: {filter}", file=sys.stderr)
         
         print("✓ Dynamic debug setup complete")
@@ -126,7 +127,7 @@ class BTTraceHelper:
         ]
         
         for filter in debug_filters:
-            if not self.write_to_file(Path("/proc/dynamic_debug/control"), f"{filter}\n", mode='w'):
+            if not self.write_to_file(DYNAMIC_DEBUG_PATH), f"{filter}\n", mode='w'):
                 print(f"Warning: Failed to clear dynamic debug filter: {filter}", file=sys.stderr)
         
         print("✓ Dynamic debug cleanup complete")
