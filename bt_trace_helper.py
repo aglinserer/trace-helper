@@ -5,10 +5,10 @@ Combines functionality of bt-kernel-trace.sh and log collection commands.
 """
 
 import argparse
+import datetime
 import os
 import subprocess
 import sys
-import datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -106,7 +106,7 @@ class BTTraceHelper:
         ]
         
         for filter in debug_filters:
-            if not self.write_to_file(DYNAMIC_DEBUG_PATH), f"{filter}\n", mode='w'):
+            if not self.write_to_file(self.DYNAMIC_DEBUG_PATH, f"{filter}\n", mode='w'):
                 print(f"Warning: Failed to set dynamic debug filter: {filter}", file=sys.stderr)
         
         print("✓ Dynamic debug setup complete")
@@ -127,7 +127,7 @@ class BTTraceHelper:
         ]
         
         for filter in debug_filters:
-            if not self.write_to_file(DYNAMIC_DEBUG_PATH), f"{filter}\n", mode='w'):
+            if not self.write_to_file(self.DYNAMIC_DEBUG_PATH, f"{filter}\n", mode='w'):
                 print(f"Warning: Failed to clear dynamic debug filter: {filter}", file=sys.stderr)
         
         print("✓ Dynamic debug cleanup complete")
@@ -142,27 +142,27 @@ class BTTraceHelper:
         """Start all log collection processes."""
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
-            output_dir = Path(output_dir)
+            _output_dir = Path(output_dir)
         else:
-            output_dir = Path.cwd()
+            _output_dir = Path.cwd()
         
         log_configs = [
             {
                 'name': 'kernel journal',
                 'cmd': ['journalctl', '-o', 'short-monotonic', '-f', '-t', 'kernel'],
-                'output': output_dir / ( self.creation_string + 'journal-kernel.log' ),
+                'output': _output_dir / ( self.creation_string + 'journal-kernel.log' ),
                 'needs_sudo': False
             },
             {
                 'name': 'bluetoothd journal',
                 'cmd': ['journalctl', '-o', 'short-monotonic', '-f', '-u', 'bluetooth'],
-                'output': output_dir / ( self.creation_string + 'journal-bluetoothd.log' ),
+                'output': _output_dir / ( self.creation_string + 'journal-bluetoothd.log' ),
                 'needs_sudo': False
             },
             {
                 'name': 'kernel trace pipe',
                 'cmd': ['cat', '/sys/kernel/tracing/trace_pipe'],
-                'output': output_dir / ( self.creation_string + 'endless-trace.log' ),
+                'output': _output_dir / ( self.creation_string + 'endless-trace.log' ),
                 'needs_sudo': True
             }
         ]

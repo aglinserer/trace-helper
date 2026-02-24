@@ -1,0 +1,27 @@
+[project]
+name = "bt-trace-helper"
+version = "0.1.0"
+description = "Bluetooth Kernel Trace Helper - Setup tracing and collect logs"
+requires-python = ">=3.8"
+
+[tool.ruff]
+line-length = 79
+
+# Assume Python 3.8+
+target-version = "py38"
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Indent with spaces
+indent-style = "space"
+
+# Use `\n` line endings
+line-ending = "lf"
+
+# Format docstrings
+docstring-code-format = true
