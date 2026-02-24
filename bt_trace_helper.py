@@ -6,10 +6,8 @@ Combines functionality of bt-kernel-trace.sh and log collection commands.
 
 import argparse
 import os
-import signal
 import subprocess
 import sys
-import threading
 from pathlib import Path
 from typing import List, Optional
 
@@ -233,12 +231,6 @@ class BTTraceHelper:
             self.stop_all()
 
 
-def signal_handler(signum, frame):
-    """Handle interrupt signals gracefully."""
-    print("\n\nReceived signal, shutting down...")
-    sys.exit(0)
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Bluetooth Kernel Trace Helper - Setup tracing and collect logs",
@@ -273,10 +265,6 @@ Examples:
     
     args = parser.parse_args()
     
-    # Register signal handlers
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-    
     helper = BTTraceHelper()
     
     # If no arguments, show help
@@ -286,7 +274,7 @@ Examples:
     
     # Stop tracing if requested
     if args.stop_trace:
-        rets = [helper.stop_tracing(), helper.stop_dynmic_debug()]
+        rets = [helper.stop_tracing(), helper.stop_dynamic_debug()]
         if all(rets):
             print("✓ Tracing and dynamic debug stopped successfully")
             sys.exit(0)
