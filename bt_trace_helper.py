@@ -100,12 +100,12 @@ class BTTraceHelper:
         
         # Enable dynamic debug for bluetooth and btusb modules
         debug_filters = [
-            "module=bluetooth +p",
-            "module=btusb +p"
+            "module bluetooth +p",
+            "module btusb +p"
         ]
         
         for filter in debug_filters:
-            if not self.write_to_file(Path("/sys/kernel/debug/dynamic_debug/control"), f"{filter}\n", mode='a'):
+            if not self.write_to_file(Path("/proc/dynamic_debug/control"), f"{filter}\n", mode='w'):
                 print(f"Warning: Failed to set dynamic debug filter: {filter}", file=sys.stderr)
         
         print("✓ Dynamic debug setup complete")
@@ -121,12 +121,12 @@ class BTTraceHelper:
         
         # Disable dynamic debug for bluetooth and btusb modules
         debug_filters = [
-            "module=bluetooth -p",
-            "module=btusb -p"
+            "module bluetooth -p",
+            "module btusb -p"
         ]
         
         for filter in debug_filters:
-            if not self.write_to_file(Path("/sys/kernel/debug/dynamic_debug/control"), f"{filter}\n", mode='a'):
+            if not self.write_to_file(Path("/proc/dynamic_debug/control"), f"{filter}\n", mode='w'):
                 print(f"Warning: Failed to clear dynamic debug filter: {filter}", file=sys.stderr)
         
         print("✓ Dynamic debug cleanup complete")
