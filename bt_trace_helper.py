@@ -27,12 +27,15 @@ class BTTraceHelper:
         "stop_discovery_sync",
     ]
 
-    def __init__(self):
+    def __init__(self, trace_functions_file: Optional[str] = None):
         self.processes: List[subprocess.Popen] = []
         self.running = False
         self.creation_string = datetime.datetime.strftime(
             datetime.datetime.now(), "%Y-%m-%d_%H-%M_"
         )
+        if trace_functions_file:
+            with open(trace_functions_file, "r") as f:
+                self.TRACE_FUNCTIONS = [line.strip() for line in f if line.strip()]
 
     def check_root(self) -> bool:
         """Check if running with root privileges."""
@@ -337,10 +340,15 @@ Examples:
         action="store_true",
         help="Stop kernel tracing (requires root)",
     )
+    parser.add_argument(
+        "--trace-functions-file",
+        type=str,
+        help="Optional file containing list of functions to trace (one per line)",
+    )
 
     args = parser.parse_args()
 
-    helper = BTTraceHelper()
+    helper = BTTraceHelper(args.trace_functions_file if args.trace_functions_file else None)
 
     # If no arguments, show help
     if not (args.setup_trace or args.collect_logs or args.stop_trace):
