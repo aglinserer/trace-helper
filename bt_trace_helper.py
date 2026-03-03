@@ -215,6 +215,12 @@ class BTTraceHelper:
                 / (self.creation_string + "endless-trace.log"),
                 "needs_sudo": True,
             },
+            {
+                "name": "btmon",
+                "cmd": ["btmon", "-w", str(_output_dir / (self.creation_string + "btmon.log"))],
+                "output": _output_dir / (self.creation_string + "btmon.log"),
+                "needs_sudo": True,
+            }
         ]
 
         self.running = True
